@@ -217,9 +217,9 @@ will generate `build/react4xp/chunks.json` containing approximately this (note t
     "js": "/thisIsAnEntry.js"
   },
   "shared": {
-    "js": "/sharedComps.f8c265056.js"
+    "js": "/shared.f8c265056.js"
   },
-  "site/parts/clientReduxed/clientReduxed": {
+  "site/parts/client/client": {
     "js": "/site/parts/client/client.js"
   },
   "site/parts/example/example": {
