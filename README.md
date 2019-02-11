@@ -2,11 +2,11 @@
 
 ## Webpack helper methods
 
-`index.js` exposes three helper methods:
+`index.js` exposes three helper methods, `getEntries`, `getCacheGroups` and `getChunksPlugin`.
 
 ---
  
-### `getEntries(entrySets, outputPath [, verbose])`:
+### `.getEntries(entrySets, outputPath [, verbose])`:
 
 Returns an object ready to be used in a webpack.config.js build file, under `module.exports.entry`. This object is built 
 using source files found under one or more source path, filtering on certain file extensions, both defined in the 
@@ -117,7 +117,7 @@ module.exports = {
 
 ---
 
-### `getCacheGroups(sourcePath [, subfoldersToIgnore [, priorities [, verbose]]])`:
+### `.getCacheGroups(sourcePath [, subfoldersToIgnore [, priorities [, verbose]]])`:
 
 Sets up code splitting / defines chunks collecting commonly used dependency code that entry components can use to import functionality and shared components. Returns an object ready to use in webpack.config.js, under `module.exports.optimization.splitChunks.cacheGroups`.
 
@@ -182,7 +182,7 @@ module.exports = {
 
 ---
 
-### `getChunksPlugin(outputDir)`: 
+### `.getChunksPlugin(outputDir)`: 
 
 Returns a `chunks-2-json-webpack-plugin`. If you put it in webpack.config.js under `module.exports.plugins`, it will put a `chunks.json` in the output directory `outputDir`. This file lists all entries and chunks, with their hashed names if that's used.
 
