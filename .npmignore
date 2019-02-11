@@ -1,0 +1,7 @@
+**/
+*
+*.*
+
+# Publish only these:
+!README.md
+!lib/index.js
