@@ -94,7 +94,7 @@ module.exports = {
 };
 ```
 
-...will generate this entries object for the webpack.config:
+...will generate this object in webpack.config under `entry`:
 
 ```json
  {
