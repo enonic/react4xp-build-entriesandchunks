@@ -15,10 +15,10 @@ Returns an object ready to be used in a webpack.config.js build file, under `mod
 using source files found under one or more source path, filtering on certain file extensions, both defined in the 
 entrysets. 
 
-The **keys** in the object will determine into which files webpack should transpile the source files (and so, what
+The **keys** in the returned object will determine into which files webpack should transpile the source files (and so, what
 the transpiled code can be accessed as after transpilation. For react entry components, this is the same as the jsxPath). 
 
-The **values** in the object are the source files.  
+The **values** in the returned object are paths to the source files.  
 
 `entrySets:` Mandatory, non-empty array of objects, each with two mandatory attributes and one optional: 
   - `sourcePath`: mandatory string, the root under which to search for source files
