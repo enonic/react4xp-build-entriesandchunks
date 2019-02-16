@@ -2,7 +2,10 @@
 
 ## Webpack helper methods
 
-`index.js` exposes three helper methods, `getEntries`, `getCacheGroups` and `getChunksPlugin`.
+`index.js` exposes three helper methods:
+  - [`getEntries`](#getentriesentrysets-outputpath--verbose)
+  - [`getCacheGroups`](#getcachegroupssourcepath--subfolderstoignore--priorities--verbose)
+  - [`getChunksPlugin`](#getchunkspluginoutputdir)
 
 ---
  
