@@ -44,7 +44,7 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
             );
             //console.log("actualEntries from .getEntries: " + JSON.stringify(actualEntries, null, 2));
 
-            // Make sure the results don't change during testing
+            // Make sure the found results can't be altered during testing
             const FROZEN_ACTUAL_ENTRIES = deepFreeze(actualEntries);
 
             expect(FROZEN_ACTUAL_ENTRIES).to.deep.equal(EXPECTED_MATCHING_ENTRIES);
@@ -69,14 +69,12 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
                 OUTPUT_PATH
             );
 
-            // Make sure the results don't change during testing
-            const FROZEN_ACTUAL_ENTRIES = deepFreeze(actualEntries);
-
             // Loads as JSON data the expected file that should be side-effect-generated during .getEntries)
             const storedEntries = require(path.join(OUTPUT_PATH, "entries.json"));
             //console.log("storedEntries from entries.json: " + JSON.stringify(storedEntries, null, 2));
 
-            // Make sure the found result can't be altered during testing
+            // Make sure the found results can't be altered during testing
+            const FROZEN_ACTUAL_ENTRIES = deepFreeze(actualEntries);
             const FROZEN_STORED_ENTRIES = deepFreeze(storedEntries);
 
             expect(Array.isArray(FROZEN_STORED_ENTRIES)).to.equal(true);
