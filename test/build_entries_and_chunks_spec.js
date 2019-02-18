@@ -5,15 +5,15 @@ import deepFreeze from 'deep-freeze';
 import React4xpEntriesAndChunks from '../lib';
 
 const DIR_NAME = __dirname; // eslint-disable-line no-undef
-const DIR_NAME_LENGTH = DIR_NAME.length + 1;
-const DIR_NAME_AND_SHASH = DIR_NAME + React4xpEntriesAndChunks.SLASH;
+//const DIR_NAME_LENGTH = DIR_NAME.length + 1;
+//const DIR_NAME_AND_SHASH = DIR_NAME + React4xpEntriesAndChunks.SLASH;
 
 describe("React4xp Webpack build: entries-and-chunks", ()=>{
     describe(".getEntries", ()=> {
 
         const OUTPUT_PATH = path.join(DIR_NAME, 'dummy-build', 'react4xp');
 
-        const entry = React4xpEntriesAndChunks.getEntries(
+        const actualEntries = React4xpEntriesAndChunks.getEntries(
             [
                 {
                     sourcePath: path.join(DIR_NAME, 'dummy-src', 'react4xp', '_components'),
@@ -27,99 +27,48 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
             ],
             OUTPUT_PATH
         );
-        console.log(JSON.stringify(entry, null, 2));
+        console.log("actualEntries: " + JSON.stringify(actualEntries, null, 2));
+
+        const storedEntries = require(path.join(OUTPUT_PATH, "entries.json"));
+        console.log("storedEntries: " + JSON.stringify(storedEntries, null, 2));
 
         // Matching files should be these, and only these:
-        const EXPECTED_MATCHING_RELATIVE_PATHS = deepFreeze([
-            path.join("dummy-src", "react4xp", "_components", "thisIsAnEntry.jsx"),
-            path.join("dummy-src", "site", "parts", "example", "example.jsx"),
-            path.join("dummy-src", "site", "parts", "client", "client.jsx"),
-        ]);
+        const EXPECTED_MATCHING_ENTRIES = deepFreeze({
+            "thisIsAnEntry": path.join(DIR_NAME, "dummy-src", "react4xp", "_components", "thisIsAnEntry.jsx"),
+            "site/parts/client/client": path.join(DIR_NAME, "dummy-src", "site", "parts", "client", "client.jsx"),
+            "site/parts/example/example": path.join(DIR_NAME, "dummy-src", "site", "parts", "example", "example.jsx"),
+        });
 
-        // Make sure the found result doesn't change during testing
-        const ENTRY = deepFreeze(entry);
-
+        // Make sure the results don't change during testing
+        const FROZEN_ACTUAL_ENTRIES = deepFreeze(actualEntries);
+        const FROZEN_STORED_ENTRIES = deepFreeze(storedEntries);
 
 
         it("scans files with selected file extensions under the source paths, " +
             "and builds an object where the values are full paths to matching files, " +
-            "exactly one path per matching file", ()=>{
+            "exactly one path per matching file, " +
+            "and does not match files that have non-target file extensions " +
+            "or files in existing, non-target directories", ()=>{
+
+            expect(FROZEN_ACTUAL_ENTRIES).to.deep.equal(EXPECTED_MATCHING_ENTRIES);
+        });
 
 
-            const alreadySeen = [];
+        it("produces an entries.json file in the output path, " +
+            "whose content is an array that perfectly matches the keys of the returned entry object", ()=>{
 
-            Object.keys(ENTRY).forEach( key => {
-                const foundPath = ENTRY[key];
-                expect(foundPath.startsWith(DIR_NAME_AND_SHASH)).to.equal(true);
+            expect(Array.isArray(FROZEN_STORED_ENTRIES)).to.equal(true);
 
-                const relativePath = foundPath.substring(DIR_NAME_LENGTH);
+            Object.keys(FROZEN_ACTUAL_ENTRIES).forEach( key => {
+                //console.log(JSON.stringify(key, null, 2));
+                expect(FROZEN_STORED_ENTRIES.indexOf(key)).to.not.equal(-1);
+            });
 
-                expect(EXPECTED_MATCHING_RELATIVE_PATHS.indexOf(relativePath)).to.not.equal(-1);
-                expect(alreadySeen.indexOf(relativePath)).to.equal(-1);
-                alreadySeen.push(relativePath);
+            FROZEN_STORED_ENTRIES.forEach( entry => {
+                //console.log(JSON.stringify(entry, null, 2));
+                expect(FROZEN_ACTUAL_ENTRIES[entry]).to.not.equal(undefined);
             });
         });
-
-
-
-        it("finds the expected number of matching files", ()=>{
-            expect(Object.keys(ENTRY).length).to.equal(3);
-        });
-
-
-        it("does not match files that have non-target file extensions", ()=>{
-            Object.keys(ENTRY).forEach( key => {
-                const foundPath = ENTRY[key];
-                expect(foundPath.endsWith(".jsx")).to.equal(true);
-            });
-        });
-
-
-        it("does not match files in existing, non-target directories", ()=>{
-            Object.keys(ENTRY).forEach( key => {
-                const foundPath = ENTRY[key];
-                expect(foundPath.indexOf("shared")).to.equal(-1);
-            });
-        });
-
-
-        it("produces an entries.json file in the output path, whose content matches the keys of the returned entry object", ()=>{
-            Object.keys(ENTRY).forEach( key => {
-                const foundPath = ENTRY[key];
-                expect(foundPath.indexOf("shared")).to.equal(-1);
-            });
-        });
-        OUTPUT_PATH
-        /*
-        it("returns an object with constants", () => {
-            const constants = getConstants(dirName);
-            console.log("constants: " + JSON.stringify(constants, null, 2));
-
-            // Sampling some values
-            expect(constants.SRC_R4X_ENTRIES).to.equal(path.join(dirName, "src", "main", "react4xp", "_components"));
-            expect(constants.BUILD_R4X).to.equal(path.join(dirName, "build", "resources", "main", "react4xp"));
-            expect(constants.LIBRARY_NAME).to.equal("React4xp");
-            expect(constants.BUILD_ENV).to.equal("development");
-            expect(constants.EXTERNALS["react-dom/server"]).to.equal("ReactDOMServer");
-        });
-
-
-        it("can override single values", () => {
-            const constants = getConstants(dirName, deepFreeze({BUILD_ENV: "production"}));
-            expect(constants.BUILD_ENV).to.equal("production");
-        });
-
-
-        it("can override the JSON shared constants file name (full path) and read constants from that", () => {
-            const constants = getConstants(dirName, deepFreeze({JSON_CONSTANTS_FILE: path.join(dirName, "usethisinstead.json")}));
-            expect(constants.EXTERNALS["react"]).to.equal(undefined);
-            expect(constants.EXTERNALS["react-dom"]).to.equal(undefined);
-            expect(constants.EXTERNALS["react-dom/server"]).to.equal(undefined);
-            expect(constants.EXTERNALS["foo"]).to.equal("foofoo");
-            expect(constants.EXTERNALS["bar"]).to.equal("barbar");
-            expect(constants.EXTERNALS["lifetheuniverseetc"]).to.equal("42");
-        }); //*/
-
     });
 
     describe(".getCacheGroups", ()=> {
