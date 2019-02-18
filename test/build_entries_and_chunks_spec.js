@@ -13,35 +13,13 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
 
         const OUTPUT_PATH = path.join(DIR_NAME, 'dummy-build', 'react4xp');
 
-        const actualEntries = React4xpEntriesAndChunks.getEntries(
-            [
-                {
-                    sourcePath: path.join(DIR_NAME, 'dummy-src', 'react4xp', '_components'),
-                    sourceExtensions: ['jsx', 'js', 'es6'],
-                },
-                {
-                    sourcePath: path.join(DIR_NAME, 'dummy-src', 'site'),
-                    sourceExtensions: ['jsx'],
-                    targetSubDir: "site",
-                },
-            ],
-            OUTPUT_PATH
-        );
-        console.log("actualEntries: " + JSON.stringify(actualEntries, null, 2));
-
-        const storedEntries = require(path.join(OUTPUT_PATH, "entries.json"));
-        console.log("storedEntries: " + JSON.stringify(storedEntries, null, 2));
-
-        // Matching files should be these, and only these:
+        // actualEntries object should exactly match this. storedEntries should exactly match these keys.
         const EXPECTED_MATCHING_ENTRIES = deepFreeze({
             "thisIsAnEntry": path.join(DIR_NAME, "dummy-src", "react4xp", "_components", "thisIsAnEntry.jsx"),
             "site/parts/client/client": path.join(DIR_NAME, "dummy-src", "site", "parts", "client", "client.jsx"),
             "site/parts/example/example": path.join(DIR_NAME, "dummy-src", "site", "parts", "example", "example.jsx"),
         });
 
-        // Make sure the results don't change during testing
-        const FROZEN_ACTUAL_ENTRIES = deepFreeze(actualEntries);
-        const FROZEN_STORED_ENTRIES = deepFreeze(storedEntries);
 
 
         it("scans files with selected file extensions under the source paths, " +
@@ -50,12 +28,56 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
             "and does not match files that have non-target file extensions " +
             "or files in existing, non-target directories", ()=>{
 
+            const actualEntries = React4xpEntriesAndChunks.getEntries(
+                [
+                    {
+                        sourcePath: path.join(DIR_NAME, 'dummy-src', 'react4xp', '_components'),
+                        sourceExtensions: ['jsx', 'js', 'es6'],
+                    },
+                    {
+                        sourcePath: path.join(DIR_NAME, 'dummy-src', 'site'),
+                        sourceExtensions: ['jsx'],
+                        targetSubDir: "site",
+                    },
+                ],
+                OUTPUT_PATH
+            );
+            //console.log("actualEntries from .getEntries: " + JSON.stringify(actualEntries, null, 2));
+
+            // Make sure the results don't change during testing
+            const FROZEN_ACTUAL_ENTRIES = deepFreeze(actualEntries);
+
             expect(FROZEN_ACTUAL_ENTRIES).to.deep.equal(EXPECTED_MATCHING_ENTRIES);
         });
 
 
         it("produces an entries.json file in the output path, " +
             "whose content is an array that perfectly matches the keys of the returned entry object", ()=>{
+
+            const actualEntries = React4xpEntriesAndChunks.getEntries(
+                [
+                    {
+                        sourcePath: path.join(DIR_NAME, 'dummy-src', 'react4xp', '_components'),
+                        sourceExtensions: ['jsx', 'js', 'es6'],
+                    },
+                    {
+                        sourcePath: path.join(DIR_NAME, 'dummy-src', 'site'),
+                        sourceExtensions: ['jsx'],
+                        targetSubDir: "site",
+                    },
+                ],
+                OUTPUT_PATH
+            );
+
+            // Make sure the results don't change during testing
+            const FROZEN_ACTUAL_ENTRIES = deepFreeze(actualEntries);
+
+            // Loads as JSON data the expected file that should be side-effect-generated during .getEntries)
+            const storedEntries = require(path.join(OUTPUT_PATH, "entries.json"));
+            //console.log("storedEntries from entries.json: " + JSON.stringify(storedEntries, null, 2));
+
+            // Make sure the found result can't be altered during testing
+            const FROZEN_STORED_ENTRIES = deepFreeze(storedEntries);
 
             expect(Array.isArray(FROZEN_STORED_ENTRIES)).to.equal(true);
 
@@ -70,6 +92,7 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
             });
         });
     });
+
 
     describe(".getCacheGroups", ()=> {
     });
