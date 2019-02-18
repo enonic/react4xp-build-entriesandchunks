@@ -3,7 +3,7 @@
 const path = require('path');
 const glob = require('glob');
 
-const SLASH = (process.platform === "win32") ? "\\" : "/";   // eslint-disable-line no-undef
+exports.SLASH = (process.platform === "win32") ? "\\" : "/";   // eslint-disable-line no-undef
 
 /** Builds component entries from files found under a directory, for selected file extensions, for being transpiled out to a target path. */
 function buildEntriesToSubfolder(entrySet, verbose) {
@@ -44,25 +44,18 @@ function buildEntriesToSubfolder(entrySet, verbose) {
 }
 
 
-// Entries are the non-dependency output files, i.e. react components and other js files that should be directly
-// available and runnable to both the browser and the nashorn engine.
-// This function builds the entries AND entries.json, which lists the first-level components that shouldn't be counted
-// as general dependencies.
-exports.getEntries = (entrySets, outputPath, verbose) => {
-    const entries = entrySets.reduce(
-        (accumulator, entrySet) => Object.assign(accumulator, buildEntriesToSubfolder(entrySet, verbose)),
-        {}
-    );
+// Builds entries.json, which lists the entries: first-level react4xp components that shouldn't be counted as general dependencies.
+function makeEntriesFile(entries, outputPath, verbose) {
 
     const fs = require('fs');
 
     const entryList = Object.keys(entries);
     const entryFile = path.join(outputPath, 'entries.json');
 
-    const dirs = outputPath.split(SLASH);
+    const dirs = outputPath.split(exports.SLASH);
     let accum = "";
     dirs.forEach(dir => {
-        accum += dir + SLASH;
+        accum += dir + exports.SLASH;
         if (!fs.existsSync(accum)){
             if (verbose) {
                 console.log("\tCreate: " + accum);
@@ -74,6 +67,22 @@ exports.getEntries = (entrySets, outputPath, verbose) => {
 
     if (verbose) {
         console.log("\tReact4xp entries (aka component names / jsxPath) listed in: " + entryFile);
+    }
+}
+
+
+// Entries are the non-dependency output files, i.e. react components and other js files that should be directly
+// available and runnable to both the browser and the nashorn engine.
+// This function builds the entries AND entries.json, which lists the first-level components that shouldn't be counted
+// as general dependencies.
+exports.getEntries = (entrySets, outputPath, verbose) => {
+    const entries = entrySets.reduce(
+        (accumulator, entrySet) => Object.assign(accumulator, buildEntriesToSubfolder(entrySet, verbose)),
+        {}
+    );
+
+    if (typeof outputPath === 'string' && outputPath.trim() !== '') {
+        makeEntriesFile(entries, outputPath, verbose);
     }
 
     return entries;
