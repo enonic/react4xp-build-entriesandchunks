@@ -162,21 +162,21 @@ module.exports = {
 }
 ```
 
-...will generate this object under cacheGroups:
+...will detect which non-ignored subfolders are under `sourcePath` and generate a `cacheGroups` config object with specified chunk priorities, if any:
 
 ```json
 {
   "vendors": {
     "name": "vendors",
     "enforce": true,
-    "test": {},
+    "test": /[\\\/]node_modules[\\\/]/,
     "chunks": "all",
     "priority": 100
   },
   "shared": {
     "name": "shared",
     "enforce": true,
-    "test": {},
+    "test": /\/project\/src\/react4xp\/shared\//,
     "chunks": "all",
     "priority": 2
   }

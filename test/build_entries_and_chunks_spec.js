@@ -1,6 +1,6 @@
-import path from 'path';
 import { expect } from 'chai';
 import deepFreeze from 'deep-freeze';
+import path from 'path';
 
 import React4xpEntriesAndChunks from '../lib';
 
@@ -93,6 +93,45 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
 
 
     describe(".getCacheGroups", ()=> {
+        const EXPECTED_CACHEGROUPS = deepFreeze({
+            "vendors": {
+                "name": "vendors",
+                "enforce": true,
+                "test": /[\\\/]node_modules[\\\/]/,
+                "chunks": "all",
+                "priority": 100,
+            },
+            "shared": {
+                "name": "shared",
+                "enforce": true,
+                "test": new RegExp(path.join(DIR_NAME, "dummy-src", "react4xp", "shared")),
+                "chunks": "all",
+                "priority": 2,
+            },
+        });
+
+
+        it("generates a optimization/splitChunks/cacheGroups webpack config object, " + 
+            "with chunks matching subfolders under the source path, " + 
+            "ignoring folder names in ignoreSubfolders, adding a standard vendors chunk, with priority=100 and giving " + 
+            "all other chunks a priority of 1 unless specified in the priorites argument", ()=>{
+                    
+                const cacheGroups = React4xpEntriesAndChunks.getCacheGroups(
+                    path.join(DIR_NAME, "dummy-src", "react4xp"),
+                    [
+                        "_components",
+                    ],
+                    {
+                        shared: 2,
+                    }
+                );
+                console.log("cacheGroups: " + JSON.stringify(cacheGroups, null, 2));
+                
+                const FROZEN_CACHEGROUPS = deepFreeze(cacheGroups); 
+
+                expect(FROZEN_CACHEGROUPS).to.deep.equal(EXPECTED_CACHEGROUPS);
+            });
+
     });
 
     describe(".getChunksPlugin", ()=> {
