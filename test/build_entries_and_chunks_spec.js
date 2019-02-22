@@ -5,8 +5,6 @@ import path from 'path';
 import React4xpEntriesAndChunks from '../lib';
 
 const DIR_NAME = __dirname; // eslint-disable-line no-undef
-//const DIR_NAME_LENGTH = DIR_NAME.length + 1;
-//const DIR_NAME_AND_SHASH = DIR_NAME + React4xpEntriesAndChunks.SLASH;
 
 describe("React4xp Webpack build: entries-and-chunks", ()=>{
     describe(".getEntries", ()=> {
@@ -135,6 +133,14 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
     });
 
     describe(".getChunksPlugin", ()=> {
+
+        const chunksPlugin = React4xpEntriesAndChunks.getChunksPlugin(
+            path.join(DIR_NAME, "dummy-build", "react4xp")
+        );
+        console.log("chunksPlugin: " + chunksPlugin);
+        console.log("chunksPlugin: " + JSON.stringify(chunksPlugin, null, 2));
+        console.log("chunksPlugin Keys: " + JSON.stringify(Object.keys(chunksPlugin), null, 2));
+        console.log("chunksPlugin type: " + JSON.stringify(typeof chunksPlugin, null, 2));
 
     });
 });
