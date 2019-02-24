@@ -140,8 +140,3 @@ exports.getCacheGroups = (sourcePath, subfoldersToIgnore, priorities, verbose) =
 
     return chunks;
 };
-
-exports.getChunksPlugin = (outputDir) => {
-    const Chunks2json = require('chunks-2-json-webpack-plugin');
-    return new Chunks2json({ outputDir, filename: 'chunks.json' });
-};

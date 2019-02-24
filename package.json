@@ -1,6 +1,6 @@
 {
     "name": "react4xp-build-entriesandchunks",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "React4xp helper: webpack-config-usable methods for generating entries and chunks from JS / ES6 / JSX files under a subfolder",
     "main": "lib/index.js",
     "scripts": {
@@ -24,9 +24,7 @@
         "url": "https://github.com/enonic/react4xp-build-entriesandchunks/issues"
     },
     "homepage": "https://github.com/enonic/react4xp-build-entriesandchunks",
-    "dependencies": {
-        "chunks-2-json-webpack-plugin": "^1.0.0"
-    },
+    "dependencies": {},
     "devDependencies": {
         "babel-cli": "^6.26.0",
         "babel-core": "^6.26.3",

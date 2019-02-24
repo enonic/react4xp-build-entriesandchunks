@@ -114,21 +114,21 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
             "ignoring folder names in ignoreSubfolders, adding a standard vendors chunk, with priority=100 and giving " + 
             "all other chunks a priority of 1 unless specified in the priorites argument", ()=>{
                     
-                const cacheGroups = React4xpEntriesAndChunks.getCacheGroups(
+            const cacheGroups = React4xpEntriesAndChunks.getCacheGroups(
                     path.join(DIR_NAME, "dummy-src", "react4xp"),
-                    [
-                        "_components",
-                    ],
-                    {
-                        shared: 2,
-                    }
+                [
+                    "_components",
+                ],
+                {
+                    shared: 2,
+                }
                 );
-                console.log("cacheGroups: " + JSON.stringify(cacheGroups, null, 2));
+            console.log("cacheGroups: " + JSON.stringify(cacheGroups, null, 2));
                 
-                const FROZEN_CACHEGROUPS = deepFreeze(cacheGroups); 
+            const FROZEN_CACHEGROUPS = deepFreeze(cacheGroups); 
 
-                expect(FROZEN_CACHEGROUPS).to.deep.equal(EXPECTED_CACHEGROUPS);
-            });
+            expect(FROZEN_CACHEGROUPS).to.deep.equal(EXPECTED_CACHEGROUPS);
+        });
 
     });
 
