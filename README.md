@@ -68,7 +68,7 @@ The **values** in the returned object are paths to the source files.
   
 `outputPath`: optional string. Root react4xp target build folder.
 
-`entriesFilename`: optional string. Filename for [the entries file](#side-effect-entries-json). 
+`entriesFilename`: optional string. Filename for [the entries file](#side-effect-entriesjson). 
 
 `verbose`: optional boolean. If truthy, a bit more logging during building.
 
