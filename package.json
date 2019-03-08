@@ -1,18 +1,21 @@
 {
     "name": "react4xp-build-entriesandchunks",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "React4xp helper: webpack-config-usable methods for generating entries and chunks from JS / ES6 / JSX files under a subfolder",
-    "main": "lib/index.js",
+    "main": "index.js",
+    "files": [
+      "index.js",
+      "README.md"
+    ],
     "scripts": {
-        "clean": "rimraf lib",
+        "clean": "rimraf ./index.js",
         "webpack": "webpack --config webpack.config.js",
-        "babel-min": "babel src -d lib --no-comments --minified --compact true",
-        "babel": "babel src -d lib --no-comments",
-        "cpjson": "copyfiles --flat src/*.json lib",
-        "prepare": "npm run checkall",
+        "babel-min": "babel src -d . --no-comments --minified --compact true",
+        "babel": "babel src -d . --no-comments",
         "eslint": "node_modules/eslint/bin/eslint.js ./*.js src/",
-        "checkall": "npm run eslint && npm run clean && npm run cpjson && npm run babel && npm run test",
-        "test": "NODE_PATH=./ mocha --compilers js:babel-core/register --require babel-polyfill --require test/test_helper.js \"test/**/*@(.js)\""
+        "prepublish": "npm run clean && npm run eslint && npm run clean && npm run babel-min && npm run test",
+        "test": "NODE_PATH=./ mocha --compilers js:babel-core/register --require babel-polyfill --require test/test_helper.js \"test/**/*@(.js)\"",
+        "postpublish": "npm run clean"
     },
     "repository": {
         "type": "git",

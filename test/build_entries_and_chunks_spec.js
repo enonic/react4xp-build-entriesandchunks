@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import deepFreeze from 'deep-freeze';
 import path from 'path';
 
-import React4xpEntriesAndChunks from '../lib';
+import React4xpEntriesAndChunks from '..';
 
 const DIR_NAME = __dirname; // eslint-disable-line no-undef
 
@@ -129,18 +129,6 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
 
             expect(FROZEN_CACHEGROUPS).to.deep.equal(EXPECTED_CACHEGROUPS);
         });
-
-    });
-
-    describe(".getChunksPlugin", ()=> {
-
-        const chunksPlugin = React4xpEntriesAndChunks.getChunksPlugin(
-            path.join(DIR_NAME, "dummy-build", "react4xp")
-        );
-        console.log("chunksPlugin: " + chunksPlugin);
-        console.log("chunksPlugin: " + JSON.stringify(chunksPlugin, null, 2));
-        console.log("chunksPlugin Keys: " + JSON.stringify(Object.keys(chunksPlugin), null, 2));
-        console.log("chunksPlugin type: " + JSON.stringify(typeof chunksPlugin, null, 2));
 
     });
 });

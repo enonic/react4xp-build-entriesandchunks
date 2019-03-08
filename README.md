@@ -1,17 +1,58 @@
-# Enonic React4XP helper: buildtime generator of webpack config objects - entries and chunks
+# react4xp-build-entriesandchunks
+
+**Enonic React4XP helper: goes through a directory tree during buildtime, generates objects for configuring a [webpack](https://webpack.js.org) build that matches React4xp's expected file structure.**
+
+These config objects are a prerequisite for the dependency chunking in the [react4xp-build-components](https://www.npmjs.com/package/react4xp-build-components) build step, which in turn allows the [React4xp runtime lib](https://github.com/enonic/lib-react4xp-runtime) to deliver cached and optimized dependencies for react components.
+
+## Jump to:
+  - [Install](#install)
+  - [Usage](#usage)
+  - [Webpack helper methods](#webpack-helper-methods)
+    - [.getEntries](#getentries)
+      - [Side effect](#side-effect-entries-json)
+      - [Example](#getentries-example)
+    - [.getCacheGroups](#getcachegroups)
+      - [Example](#getcachegroups-example)
+
+## Install
+
+```bash
+npm add --save-dev react4xp-build-entriesandchunks
+```
+
+## Usage
+
+In `webpack.config.js`:
+
+```javascript
+var React4xpEntriesAndChunks = require('react4xp-build-entriesandchunks');
+
+module.exports = {
+    entry: React4xpEntriesAndChunks.getEntries(entrySets, outputPath, entriesFilename, verbose),
+    
+    optimization: {
+        splitChunks: {
+            name: false,
+            cacheGroups: React4xpEntriesAndChunks.getCacheGroups(sourcePath, subfoldersToIgnore, priorities, verbose)
+        }
+    },
+}
+
+```
 
 ## Webpack helper methods
 
-`index.js` exposes three helper methods:
-  - [`getEntries`](#getentriesentrysets-outputpath--verbose)
-  - [`getCacheGroups`](#getcachegroupssourcepath--subfolderstoignore--priorities--verbose)
-  - [`getChunksPlugin`](#getchunkspluginoutputdir)
+`index.js` exposes two helper methods: [`getEntries`](#getentries) and [`getCacheGroups`](#getcachegroups).
 
 ---
  
-### `.getEntries(entrySets, outputPath [, verbose])`:
+### `.getEntries`
 
-Returns an object ready to be used in a webpack.config.js build file, under `module.exports.entry`. This object is built 
+```
+.getEntries(entrySets [, outputPath [, entriesFilename [, verbose]]] )
+```
+
+Returns an object ready to be used in a `webpack.config.js` build file, under `module.exports.entry`. This object is built 
 using source files found under one or more source path, filtering on certain file extensions, both defined in the 
 entrysets. 
 
@@ -25,45 +66,46 @@ The **values** in the returned object are paths to the source files.
   - `sourceExtensions`: mandatory array of strings, file extensions (without a leading dot) for files to include
   - `targetSubDir`: optional string, name of subdirectory (relative, not full path) under `outputPath` where the files in this entrySet should be put. Works as a jsxPath prefix for entry components.
   
-`outputPath`: mandatory string. Root react4xp target build folder.
+`outputPath`: optional string. Root react4xp target build folder.
 
-`verbose`: optional boolean. If truthy, a bit more logging is output during building.
+`entriesFilename`: optional string. Filename for [the entries file](#side-effect-entries-json). 
+
+`verbose`: optional boolean. If truthy, a bit more logging during building.
 
 #### Side effect: `entries.json`
 
-During this generation/search, `getEntries` generates a json file, `entries.json` in the `outputPath`, listing all the jsxPaths for entry components. Both a handy overview, and used in runtime to separate entries from chunks.
+If BOTH `outputPath` and `entriesFilename` are set, a json file by that name - usually `entries.json` - is created in that location, as a side effect of the search/entry generation. This file lists all the `jsxPath`s for entry components. Both a handy overview, and used in runtime to separate [entries from chunks](If BOTH `outputPath` and `entriesFilename` are set, a json file by that name - usually `entries.json` - is created in that location, as a side effect of the search/entry generation. This file lists all the `jsxPath`s for entry components. Both a handy overview, and used in runtime to separate [entries from chunks](https://www.npmjs.com/package/react4xp-build-components#output).
 
 
-#### EXAMPLE:
+
+#### .getEntries example:
 
 If the file structure is...
 
 ```
 /project/
-	src/
-		site/
-			parts/
-	
-				client/
-					client.js
-					client.jsx
-	
-				example/
-					example.js
-					example.html
-					example.jsx
-					example.xml
-					
-		react4xp/
-	
-			_components/
-				thisIsAnEntry.jsx
-	
-			shared/
-				button.jsx
-				header.jsx
-				
-	build/		
+└── src/
+|	└── site/
+|	|	└── parts/
+|	|		└── client/
+|	|		|	└── client.js
+|	|		|	└── client.jsx
+|	|		└── example/
+|	|			└── example.js
+|	|			└── example.html
+|	|			└── example.jsx
+|	|			└── example.xml
+|	|				
+|	└── react4xp/
+|		|
+|		└── _components/
+|		|	    └── thisIsAnEntry.jsx
+|		|
+|		└── shared/
+|			    └── button.jsx
+|			    └── header.jsx
+|				
+└── build/		
 ```
 
 ...then running webpack with this setup...
@@ -86,7 +128,8 @@ module.exports = {
                 targetSubDir: "site"                      
             }
         ],
-        "/project/build/react4xp"
+        "/project/build/react4xp",
+        "entries.json"
     )
         
     //...
@@ -120,7 +163,11 @@ module.exports = {
 
 ---
 
-### `.getCacheGroups(sourcePath [, subfoldersToIgnore [, priorities [, verbose]]])`:
+### `.getCacheGroups`:
+
+```
+.getCacheGroups(sourcePath [, subfoldersToIgnore [, priorities [, verbose]]] )
+```
 
 Sets up code splitting / defines chunks collecting commonly used dependency code that entry components can use to import functionality and shared components. Returns an object ready to use in webpack.config.js, under `module.exports.optimization.splitChunks.cacheGroups`.
 
@@ -132,7 +179,7 @@ This is designed to make a `vendors` chunk for shared code from `node_modules`, 
 `verbose`: optional boolean. If truthy, a bit more logging is output during building.
 
 
-#### EXAMPLE:
+#### .getCacheGroups example:
 
 In the same file structure as above, running webpack with this setup:
 
@@ -183,55 +230,3 @@ module.exports = {
 }
 ```
 
----
-
-### `.getChunksPlugin(outputDir)`: 
-
-Returns a `chunks-2-json-webpack-plugin`. If you put it in webpack.config.js under `module.exports.plugins`, it will put a `chunks.json` in the output directory `outputDir`. This file lists all entries and chunks, with their hashed names if that's used.
-
-#### EXAMPLE:
-
-Using the same file structure, and running the same `getEntries` and `getCacheGroups` as in the above examples:
-
-Adding this to the plugins in webpack.config.js:
-
-Running webpack with this setup...
-
-```javascript
-// webpack.config.js
-module.exports = {
-    
-    // ...
-    
-    plugins: [
-        React4xpEntriesAndChunks.getChunksPlugin("build/react4xp")
-    ]
-    
-    // ...
-	
-}
-```
-
-will generate `build/react4xp/chunks.json` containing approximately this (note the cache-busting hashes - generated on build, that's why this is needed for reference):
-
-```json
-{
-  "thisIsAnEntry": {
-    "js": "/thisIsAnEntry.js"
-  },
-  "shared": {
-    "js": "/shared.f8c265056.js"
-  },
-  "site/parts/client/client": {
-    "js": "/site/parts/client/client.js"
-  },
-  "site/parts/example/example": {
-    "js": "/site/parts/example/example.js"
-  },
-  "vendors": {
-    "js": "/vendors.44ab9f5bc.js"
-  }
-}
-```
-
-There might also be sourcemaps references here.

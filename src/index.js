@@ -7,9 +7,8 @@ exports.SLASH = (process.platform === "win32") ? "\\" : "/";   // eslint-disable
 
 /** Builds component entries from files found under a directory, for selected file extensions, for being transpiled out to a target path. */
 function buildEntriesToSubfolder(entrySet, verbose) {
-    if (verbose) {
-        console.log("buildEntriesToReact4xpSubfolder: " + JSON.stringify(entrySet, null, 2));
-    }
+    const verboseLog = verbose ? console.log : function () {};
+    verboseLog("buildEntriesToReact4xpSubfolder: " + JSON.stringify(entrySet, null, 2));
 
     const sourcePath = entrySet.sourcePath;
     const extensions = entrySet.sourceExtensions;
@@ -32,9 +31,7 @@ function buildEntriesToSubfolder(entrySet, verbose) {
                         let subdir = parsedEl.dir.substring(sourcePath.length).replace(/(^\/+)|(\/+$)/g, "");
                         const name = path.join(targetPath, subdir, parsedEl.name);
 
-                        if (verbose) {
-                            console.log("\tEntry: ", name, "->", entry);
-                        }
+                        verboseLog("\tEntry: ", name, "->", entry);
 
                         obj[name] = entry;
                     }
@@ -45,12 +42,11 @@ function buildEntriesToSubfolder(entrySet, verbose) {
 
 
 // Builds entries.json, which lists the entries: first-level react4xp components that shouldn't be counted as general dependencies.
-function makeEntriesFile(entries, outputPath, verbose) {
-
+function makeEntriesFile(entries, outputPath, entriesFilename, verbose) {
     const fs = require('fs');
 
     const entryList = Object.keys(entries);
-    const entryFile = path.join(outputPath, 'entries.json');
+    const entryFile = path.join(outputPath, entriesFilename);
 
     const dirs = outputPath.split(exports.SLASH);
     let accum = "";
@@ -75,14 +71,17 @@ function makeEntriesFile(entries, outputPath, verbose) {
 // available and runnable to both the browser and the nashorn engine.
 // This function builds the entries AND entries.json, which lists the first-level components that shouldn't be counted
 // as general dependencies.
-exports.getEntries = (entrySets, outputPath, verbose) => {
+exports.getEntries = (entrySets, outputPath, entriesFilename, verbose) => {
     const entries = entrySets.reduce(
         (accumulator, entrySet) => Object.assign(accumulator, buildEntriesToSubfolder(entrySet, verbose)),
         {}
     );
 
-    if (typeof outputPath === 'string' && outputPath.trim() !== '') {
-        makeEntriesFile(entries, outputPath, verbose);
+    if (
+        typeof outputPath === 'string' && outputPath.trim() !== '' &&
+        typeof entriesFilename === 'string' && entriesFilename.trim() !== ''
+    ) {
+        makeEntriesFile(entries, outputPath, entriesFilename, verbose);
     }
 
     return entries;
