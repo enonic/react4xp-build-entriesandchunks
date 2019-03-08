@@ -8,7 +8,7 @@
       "README.md"
     ],
     "scripts": {
-        "clean": "rimraf ./index.js",
+        "clean": "rimraf ./index.js && rimraf test/dummy-build",
         "webpack": "webpack --config webpack.config.js",
         "babel-min": "babel src -d . --no-comments --minified --compact true",
         "babel": "babel src -d . --no-comments",

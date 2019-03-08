@@ -38,7 +38,8 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
                         targetSubDir: "site",
                     },
                 ],
-                OUTPUT_PATH
+                OUTPUT_PATH,
+                "outputEntries.json"
             );
             //console.log("actualEntries from .getEntries: " + JSON.stringify(actualEntries, null, 2));
 
@@ -64,11 +65,12 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
                         targetSubDir: "site",
                     },
                 ],
-                OUTPUT_PATH
+                OUTPUT_PATH,
+                "outputEntries.json"
             );
 
             // Loads as JSON data the expected file that should be side-effect-generated during .getEntries)
-            const storedEntries = require(path.join(OUTPUT_PATH, "entries.json"));
+            const storedEntries = require(path.join(OUTPUT_PATH, "outputEntries.json"));
             //console.log("storedEntries from entries.json: " + JSON.stringify(storedEntries, null, 2));
 
             // Make sure the found results can't be altered during testing
