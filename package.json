@@ -1,6 +1,6 @@
 {
     "name": "react4xp-build-entriesandchunks",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "React4xp helper: webpack-config-usable methods for generating entries and chunks from JS / ES6 / JSX files under a subfolder",
     "main": "index.js",
     "files": [
