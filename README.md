@@ -9,7 +9,7 @@ These config objects are a prerequisite for the dependency chunking in the [reac
   - [Usage](#usage)
   - [Webpack helper methods](#webpack-helper-methods)
     - [.getEntries](#getentries)
-      - [Side effect](#side-effect-entries-json)
+      - [Side effect](#side-effect-entriesjson)
       - [Example](#getentries-example)
     - [.getCacheGroups](#getcachegroups)
       - [Example](#getcachegroups-example)
@@ -102,8 +102,8 @@ If the file structure is...
 |		|	    └── thisIsAnEntry.jsx
 |		|
 |		└── shared/
-|			    └── button.jsx
-|			    └── header.jsx
+|			└── button.jsx
+|			└── header.jsx
 |				
 └── build/		
 ```
@@ -163,7 +163,7 @@ module.exports = {
 
 ---
 
-### `.getCacheGroups`:
+### `.getCacheGroups`
 
 ```
 .getCacheGroups(sourcePath [, subfoldersToIgnore [, priorities [, verbose]]] )
