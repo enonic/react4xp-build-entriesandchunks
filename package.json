@@ -1,11 +1,12 @@
 {
     "name": "react4xp-build-entriesandchunks",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "description": "React4xp helper: webpack-config-usable methods for generating entries and chunks from JS / ES6 / JSX files under a subfolder",
     "main": "index.js",
     "files": [
       "index.js",
-      "README.md"
+      "README.md",
+      "LICENCE"
     ],
     "scripts": {
         "clean": "rimraf ./index.js && rimraf test/dummy-build",
@@ -22,7 +23,7 @@
         "url": "git+https://github.com/enonic/react4xp-build-entriesandchunks.git"
     },
     "author": "Espen Norderud",
-    "license": "MIT",
+    "license": "Apache-2.0",
     "bugs": {
         "url": "https://github.com/enonic/react4xp-build-entriesandchunks/issues"
     },
