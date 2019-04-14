@@ -5,12 +5,24 @@ const glob = require('glob');
 
 exports.SLASH = (process.platform === "win32") ? "\\" : "/";   // eslint-disable-line no-undef
 
+// UGLY WINDOWS FIX/HACK: normalize the sourcePath: replace all backslashes with forward-slashes.
+// If it starts with 'X:\' (where X is any letter), it's fairly safe to assume it's an absolute windows path and backslashes are fair game.
+// If not, it's probably not possible to rule it out entirely that the path is not a valid POSIX path with a backslash in it.
+// If so, log a warning.
+exports.normalizePath = (path) => {
+    if (!(new RegExp('^[a-zA-Z]:\\\\', 'i').test(path)) && new RegExp('\\\\', 'i').test(path)) {
+        console.warning("Backslashes found in path (" + JSON.stringify(path, null, 2) + "). Replacing with forward slashes.");
+    }
+    return path.replace(/\\/g, '/');
+};
+
 /** Builds component entries from files found under a directory, for selected file extensions, for being transpiled out to a target path. */
 function buildEntriesToSubfolder(entrySet, verbose) {
+
     const verboseLog = verbose ? console.log : function () {};
     verboseLog("buildEntriesToReact4xpSubfolder: " + JSON.stringify(entrySet, null, 2));
 
-    const sourcePath = entrySet.sourcePath;
+    const sourcePath = exports.normalizePath(entrySet.sourcePath);
     const extensions = entrySet.sourceExtensions;
     let targetPath = (entrySet.targetSubDir || "").trim();
     if (targetPath.startsWith("/")) {
@@ -26,10 +38,13 @@ function buildEntriesToSubfolder(entrySet, verbose) {
             accumulator,
             glob.sync(path.join(sourcePath, '**/*.' + extension)).reduce(
                 (obj, entry) => {
+                    entry = exports.normalizePath(entry);
                     const parsedEl = path.parse(entry);
                     if (parsedEl && parsedEl.dir.startsWith(sourcePath)) {
                         let subdir = parsedEl.dir.substring(sourcePath.length).replace(/(^\/+)|(\/+$)/g, "");
-                        const name = path.join(targetPath, subdir, parsedEl.name);
+
+                        // UGLY HACK: Platform-independent forced-forwardslash version of path.join
+                        const name = [targetPath, subdir, parsedEl.name].filter(a => (a || "").trim()).join('/');
 
                         verboseLog("\tEntry: ", name, "->", entry);
 
@@ -95,6 +110,8 @@ exports.getEntries = (entrySets, outputPath, entriesFilename, verbose) => {
 // - vendors is third level / third party libs under /node_modules/
 // - subfolder names is second level, below the top-level entry components
 exports.getCacheGroups = (sourcePath, subfoldersToIgnore, priorities, verbose) => {
+    sourcePath = exports.normalizePath(sourcePath);
+
     const chunks = {
         vendors: {
             name: 'vendors',
