@@ -15,7 +15,7 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
 
         // actualEntries object should exactly match this. storedEntries should exactly match these keys.
         const EXPECTED_MATCHING_ENTRIES = deepFreeze({
-            "thisIsAnEntry": normalizePath(path.join(DIR_NAME, "dummy-src", "react4xp", "_components", "thisIsAnEntry.jsx")),
+            "thisIsAnEntry": normalizePath(path.join(DIR_NAME, "dummy-src", "react4xp", "_entries", "thisIsAnEntry.jsx")),
             "site/parts/client/client": normalizePath(path.join(DIR_NAME, "dummy-src", "site", "parts", "client", "client.jsx")),
             "site/parts/example/example": normalizePath(path.join(DIR_NAME, "dummy-src", "site", "parts", "example", "example.jsx")),
         });
@@ -32,7 +32,7 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
             const actualEntries = getEntries(
                 [
                     {
-                        sourcePath: path.join(DIR_NAME, 'dummy-src', 'react4xp', '_components'),
+                        sourcePath: path.join(DIR_NAME, 'dummy-src', 'react4xp', '_entries'),
                         sourceExtensions: ['jsx', 'js', 'es6'],
                     },
                     {
@@ -60,7 +60,7 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
             const actualEntries = getEntries(
                 [
                     {
-                        sourcePath: path.join(DIR_NAME, 'dummy-src', 'react4xp', '_components'),
+                        sourcePath: path.join(DIR_NAME, 'dummy-src', 'react4xp', '_entries'),
                         sourceExtensions: ['jsx', 'js', 'es6'],
                     },
                     {
@@ -123,7 +123,7 @@ describe("React4xp Webpack build: entries-and-chunks", ()=>{
             const cacheGroups = getCacheGroups(
                 path.join(DIR_NAME, "dummy-src", "react4xp"),
                 [
-                    "_components",
+                    "_entries",
                 ],
                 {
                     shared: 2,

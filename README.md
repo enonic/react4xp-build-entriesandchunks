@@ -2,7 +2,7 @@
 
 **Enonic React4XP helper: goes through a directory tree during buildtime, generates objects for configuring a [webpack](https://webpack.js.org) build that matches React4xp's expected file structure.**
 
-These config objects are a prerequisite for the dependency chunking in the [react4xp-build-components](https://www.npmjs.com/package/react4xp-build-components) build step, which in turn allows the [React4xp runtime lib](https://github.com/enonic/lib-react4xp-runtime) to deliver cached and optimized dependencies for react components.
+These config objects are a prerequisite for the dependency chunking in the [react4xp-build-components](https://www.npmjs.com/package/react4xp-build-components) build step, which in turn allows the [React4xp runtime lib](https://github.com/enonic/lib-react4xp) to deliver cached and optimized dependencies for react components.
 
 ## Jump to:
   - [Install](#install)
@@ -98,7 +98,7 @@ If the file structure is...
 |	|				
 |	└── react4xp/
 |		|
-|		└── _components/
+|		└── _entries/
 |		|	    └── thisIsAnEntry.jsx
 |		|
 |		└── shared/
@@ -119,7 +119,7 @@ module.exports = {
     entry: React4xpEntriesAndChunks.getEntries(
         [
             {
-                sourcePath: `/project/src/react4xp/_components/`,
+                sourcePath: `/project/src/react4xp/_entries/`,
                 sourceExtensions: ['jsx', 'js', 'es6']
             },
             {
@@ -141,7 +141,7 @@ module.exports = {
 
 ```json
  {
-  "thisIsAnEntry": "/project/src/react4xp/_components/thisIsAnEntry.jsx",
+  "thisIsAnEntry": "/project/src/react4xp/_entries/thisIsAnEntry.jsx",
   "site/parts/client/client": "/project/src/site/parts/client/client.jsx",
   "site/parts/example/example": "/project/src/site/parts/example/example.jsx"
 }
@@ -195,7 +195,7 @@ module.exports = {
             cacheGroups: React4xpEntriesAndChunks.getCacheGroups(
                 "/project/src/react4xp",
                 [
-                    "_components"
+                    "_entries"
                 ],
                 {
                     shared: 2
@@ -229,4 +229,3 @@ module.exports = {
   }
 }
 ```
-
