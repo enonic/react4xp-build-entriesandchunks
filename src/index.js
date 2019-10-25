@@ -20,7 +20,7 @@ exports.normalizePath = (path) => {
 function buildEntriesToSubfolder(entrySet, verbose) {
 
     const verboseLog = verbose ? console.log : function () {};
-    verboseLog("buildEntriesToReact4xpSubfolder: " + JSON.stringify(entrySet, null, 2));
+    verboseLog("\nbuildEntriesToReact4xpSubfolder: " + JSON.stringify(entrySet, null, 2) + "\n");
 
     const sourcePath = exports.normalizePath(entrySet.sourcePath);
     const extensions = entrySet.sourceExtensions;
@@ -46,7 +46,7 @@ function buildEntriesToSubfolder(entrySet, verbose) {
                         // UGLY HACK: Platform-independent forced-forwardslash version of path.join
                         const name = [targetPath, subdir, parsedEl.name].filter(a => (a || "").trim()).join('/');
 
-                        verboseLog("\tEntry: ", name, "->", entry);
+                        verboseLog("\nEntry: ", name, "->", entry + "\n");
 
                         obj[name] = entry;
                     }
@@ -69,7 +69,7 @@ function makeEntriesFile(entries, outputPath, entriesFilename, verbose) {
         accum += dir + exports.SLASH;
         if (!fs.existsSync(accum)){
             if (verbose) {
-                console.log("\tCreate: " + accum);
+                console.log("\nCreate: " + accum + "\n");
             }
             fs.mkdirSync(accum);
         }
@@ -77,7 +77,7 @@ function makeEntriesFile(entries, outputPath, entriesFilename, verbose) {
     fs.writeFileSync(entryFile, JSON.stringify(entryList, null, 2));
 
     if (verbose) {
-        console.log("\tReact4xp entries (aka component names / jsxPath) listed in: " + entryFile);
+        console.log("\nReact4xp entries (aka component names / jsxPath) listed in: " + entryFile + "\n");
     }
 }
 
@@ -145,7 +145,7 @@ exports.getCacheGroups = (sourcePath, subfoldersToIgnore, priorities, verbose) =
     });
 
     if (verbose) {
-        console.log("Chunks: " + JSON.stringify(chunks, null, 2));
+        console.log("\nChunks: " + JSON.stringify(chunks, null, 2) + "\n");
     }
 
     return chunks;
