@@ -3,11 +3,12 @@
 const path = require('path');
 const glob = require('glob');
 
-exports.SLASH = (process.platform === "win32") ? "\\" : "/";   // eslint-disable-line no-undef
+// eslint-disable-next-line no-undef
+exports.SLASH = (process.platform === "win32") ? "\\" : "/";
 
 // UGLY WINDOWS FIX/HACK: normalize the sourcePath: replace all backslashes with forward-slashes.
 // If it starts with 'X:\' (where X is any letter), it's fairly safe to assume it's an absolute windows path and backslashes are fair game.
-// If not, it's probably not possible to rule it out entirely that the path is not a valid POSIX path with a backslash in it.
+// If not, it's probably impossible to know for sure that the path is not a valid POSIX path with a backslash in it?
 // If so, log a warning.
 exports.normalizePath = (path) => {
     if (!(new RegExp('^[a-zA-Z]:\\\\', 'i').test(path)) && new RegExp('\\\\', 'i').test(path)) {
@@ -20,7 +21,7 @@ exports.normalizePath = (path) => {
 function buildEntriesToSubfolder(entrySet, verbose) {
 
     const verboseLog = verbose ? console.log : function () {};
-    verboseLog("\nbuildEntriesToReact4xpSubfolder: " + JSON.stringify(entrySet, null, 2) + "\n");
+    verboseLog("Entries from subfolder (entry set: " + JSON.stringify(entrySet) + ")");
 
     const sourcePath = exports.normalizePath(entrySet.sourcePath);
     const extensions = entrySet.sourceExtensions;
@@ -46,7 +47,7 @@ function buildEntriesToSubfolder(entrySet, verbose) {
                         // UGLY HACK: Platform-independent forced-forwardslash version of path.join
                         const name = [targetPath, subdir, parsedEl.name].filter(a => (a || "").trim()).join('/');
 
-                        verboseLog("\nEntry: ", name, "->", entry + "\n");
+                        verboseLog("\tEntry: ", name, "->", entry);
 
                         obj[name] = entry;
                     }
@@ -76,9 +77,9 @@ function makeEntriesFile(entries, outputPath, entriesFilename, verbose) {
     });
     fs.writeFileSync(entryFile, JSON.stringify(entryList, null, 2));
 
-    if (verbose) {
-        console.log("\nReact4xp entries (aka component names / jsxPath) listed in: " + entryFile + "\n");
-    }
+    //if (verbose) {
+    console.log("React4xp entries (a.k.a jsxPath) listed in: " + entryFile + "\n");
+    //}
 }
 
 

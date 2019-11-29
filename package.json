@@ -13,8 +13,8 @@
     "webpack": "webpack --config webpack.config.js",
     "babel-min": "babel src -d . --no-comments --minified --compact true",
     "babel": "babel src -d . --no-comments",
-    "eslint": "node_modules/eslint/bin/eslint.js ./*.js src/",
-    "prepublish": "npm run clean && npm run eslint && npm run clean && npm run babel && npm run test",
+    "lint": "node_modules/eslint/bin/eslint.js ./*.js src/ --fix",
+    "prepublish": "npm run clean && npm run lint && npm run clean && npm run babel && npm run test",
     "test": "NODE_PATH=./ mocha --compilers js:babel-core/register --require babel-polyfill --require test/test_helper.js \"test/**/*@(.js)\"",
     "postpublish": "npm run clean"
   },
