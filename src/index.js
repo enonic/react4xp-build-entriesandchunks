@@ -18,9 +18,8 @@ exports.normalizePath = (path) => {
 };
 
 /** Builds component entries from files found under a directory, for selected file extensions, for being transpiled out to a target path. */
-function buildEntriesToSubfolder(entrySet, verbose) {
+function buildEntriesToSubfolder(entrySet, verboseLog) {
 
-    const verboseLog = verbose ? console.log : function () {};
     verboseLog("Entries from subfolder (entry set: " + JSON.stringify(entrySet) + ")");
 
     const sourcePath = exports.normalizePath(entrySet.sourcePath);
@@ -58,7 +57,7 @@ function buildEntriesToSubfolder(entrySet, verbose) {
 
 
 // Builds entries.json, which lists the entries: first-level react4xp components that shouldn't be counted as general dependencies.
-function makeEntriesFile(entries, outputPath, entriesFilename, verbose) {
+function makeEntriesFile(entries, outputPath, entriesFilename, verboseLog) {
     const fs = require('fs');
 
     const entryList = Object.keys(entries);
@@ -69,17 +68,13 @@ function makeEntriesFile(entries, outputPath, entriesFilename, verbose) {
     dirs.forEach(dir => {
         accum += dir + exports.SLASH;
         if (!fs.existsSync(accum)){
-            if (verbose) {
-                console.log("\nCreate: " + accum + "\n");
-            }
+            verboseLog("\tCreate: " + accum);
             fs.mkdirSync(accum);
         }
     });
     fs.writeFileSync(entryFile, JSON.stringify(entryList, null, 2));
 
-    //if (verbose) {
-    console.log("React4xp entries (a.k.a jsxPath) listed in: " + entryFile + "\n");
-    //}
+    verboseLog("React4xp entries (a.k.a jsxPath) listed in: " + entryFile + "\n");
 }
 
 
@@ -88,8 +83,9 @@ function makeEntriesFile(entries, outputPath, entriesFilename, verbose) {
 // This function builds the entries AND entries.json, which lists the first-level components that shouldn't be counted
 // as general dependencies.
 exports.getEntries = (entrySets, outputPath, entriesFilename, verbose) => {
+    const verboseLog = verbose ? console.log : function () {};
     const entries = entrySets.reduce(
-        (accumulator, entrySet) => Object.assign(accumulator, buildEntriesToSubfolder(entrySet, verbose)),
+        (accumulator, entrySet) => Object.assign(accumulator, buildEntriesToSubfolder(entrySet, verboseLog)),
         {}
     );
 
@@ -97,57 +93,8 @@ exports.getEntries = (entrySets, outputPath, entriesFilename, verbose) => {
         typeof outputPath === 'string' && outputPath.trim() !== '' &&
         typeof entriesFilename === 'string' && entriesFilename.trim() !== ''
     ) {
-        makeEntriesFile(entries, outputPath, entriesFilename, verbose);
+        makeEntriesFile(entries, outputPath, entriesFilename, verboseLog);
     }
 
     return entries;
-};
-
-
-
-
-// Sets up chunking / code splitting: turns subfolders below src/main/react4xp (except _entries)
-// into layers of dependency chunks:
-// - vendors is third level / third party libs under /node_modules/
-// - subfolder names is second level, below the top-level entry components
-exports.getCacheGroups = (sourcePath, subfoldersToIgnore, priorities, verbose) => {
-    sourcePath = exports.normalizePath(sourcePath);
-
-    const chunks = {
-        vendors: {
-            name: 'vendors',
-            enforce: true,
-            test: /[\\/]node_modules[\\/]/,
-            chunks: 'all',
-            priority: 100,
-        },
-    };
-
-    // In order to make all directories below sourcePath (except _entries and _common) into a chunk of their own, make
-    // an array of names of first-level directories below sourcePath:
-    const chunkDirs = (glob.sync(path.join(sourcePath, '**/')) || [])
-        .filter(dirr => !!dirr && dirr.startsWith(sourcePath))
-        .map(dirr => path.parse(dirr.substring(sourcePath.length)))
-        .filter(dirr =>
-            !!dirr && dirr.dir === "/" &&
-            dirr.name !== "" &&
-            (subfoldersToIgnore || []).indexOf(dirr.name) === -1
-        )
-        .map(dirr => dirr.name);
-
-    chunkDirs.forEach(dirr => {
-        chunks[dirr] = {
-            name: dirr,
-            enforce: true,
-            test: new RegExp(path.join(sourcePath, dirr)),
-            chunks: 'all',
-            priority: (priorities || {})[dirr] || 1,
-        };
-    });
-
-    if (verbose) {
-        console.log("\nChunks: " + JSON.stringify(chunks, null, 2) + "\n");
-    }
-
-    return chunks;
 };
