@@ -46,7 +46,7 @@
     "eslint": "3.14.0",
     "eslint-plugin-react": "^7.12.4",
     "mocha": "^5.2.0",
-    "rimraf": "^2.6.3",
+    "rimraf": "^3.0.2",
     "webpack": "^4.29.5",
     "webpack-cli": "^3.2.3",
     "webpack-node-externals": "^1.7.2"
