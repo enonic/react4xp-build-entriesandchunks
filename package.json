@@ -1,63 +1,19 @@
 {
   "name": "react4xp-build-entriesandchunks",
-  "version": "0.4.0",
-  "description": "React4xp helper: webpack-config-usable methods for generating entries and chunks from JS / ES6 / JSX files under a subfolder",
+  "version": "0.0.0",
+  "description": "This repo has been moved into [the react4xp-npm monorepo](https://github.com/enonic/react4xp-npm), under packages.",
   "main": "index.js",
-  "files": [
-    "index.js",
-    "README.md",
-    "LICENCE"
-  ],
   "scripts": {
-    "clean": "rimraf ./index.js && rimraf test/dummy-build",
-    "webpack": "webpack --config webpack.config.js",
-    "babel-min": "babel src -d . --no-comments --minified --compact true",
-    "babel": "babel src -d . --no-comments",
-    "lint": "node_modules/eslint/bin/eslint.js ./*.js src/ --fix",
-    "prepublish": "npm run clean && npm run lint && npm run clean && npm run babel && npm run test",
-    "test": "NODE_PATH=./ mocha --compilers js:babel-core/register --require babel-polyfill --require test/test_helper.js \"test/**/*@(.js)\"",
-    "postpublish": "npm run clean"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/enonic/react4xp-build-entriesandchunks.git"
   },
-  "author": "Espen Norderud",
-  "license": "Apache-2.0",
+  "author": "",
+  "license": "Apache-2",
   "bugs": {
     "url": "https://github.com/enonic/react4xp-build-entriesandchunks/issues"
   },
-  "homepage": "https://github.com/enonic/react4xp-build-entriesandchunks",
-  "dependencies": {},
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-eslint": "^7.1.1",
-    "babel-loader": "^7.1.5",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-polyfill": "6.20.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-0": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "chai": "3.5.0",
-    "copyfiles": "^2.1.0",
-    "deep-freeze": "^0.0.1",
-    "eslint": "3.14.0",
-    "eslint-plugin-react": "^7.12.4",
-    "mocha": "^5.2.0",
-    "rimraf": "^2.6.3",
-    "webpack": "^4.29.5",
-    "webpack-cli": "^3.2.3",
-    "webpack-node-externals": "^1.7.2"
-  },
-  "babel": {
-    "presets": [
-      "es2015",
-      "stage-0"
-    ],
-    "plugins": [
-      "transform-object-rest-spread"
-    ]
-  }
+  "homepage": "https://github.com/enonic/react4xp-build-entriesandchunks#readme"
 }
